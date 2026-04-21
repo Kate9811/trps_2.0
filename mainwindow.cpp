@@ -318,7 +318,6 @@ void MainWindow::setupUI()
         );
     processInfoText->setPlainText(
         "📄 Список файлов в обработке будет отображаться здесь.\n\n"
-        "Прогресс каждого файла сейчас берётся из текущей логики перевода."
         );
 
     processFilesLayout->addWidget(processInfoText);
@@ -561,11 +560,6 @@ void MainWindow::onTranslationFinished(const QString &translatedText, bool succe
         m_overallProgressLabel->setText("Общий прогресс: 100%");
     m_progressBar->setVisible(false);
 
-    if (m_fileQueue.isEmpty()) {
-        QMessageBox::information(this, "Готово", "Файл переведён!");
-    } else {
-        appendLog("Файл переведён. Переход к следующему...");
-    }
 
     processNextFile();
 }
@@ -627,9 +621,9 @@ void MainWindow::processNextFile()
         m_progressBar->setVisible(false);
         m_translateBtn->setEnabled(true);
         m_fileLabel->setText("Файл не выбран");
-        appendLog("Все файлы обработаны!");
+
         m_stack->setCurrentWidget(m_resultPage);
-        QMessageBox::information(this, "Готово", "Все файлы в очереди переведены!");
+
         return;
     }
 
@@ -637,7 +631,7 @@ void MainWindow::processNextFile()
     m_currentFilePath = m_fileQueue.dequeue();
 
     QString fileName = QFileInfo(m_currentFilePath).fileName();
-    appendLog(QString("=== Обработка файла %1 (осталось в очереди: %2) ===")
+    appendLog(QString("Обработка файла %1 (осталось в очереди: %2)")
                   .arg(fileName)
                   .arg(m_fileQueue.size()));
 
@@ -669,7 +663,6 @@ void MainWindow::translateCurrentFile()
     QString sourceCode = m_sourceLangCombo->currentData().toString();
     QString targetCode = m_targetLangCombo->currentData().toString();
 
-    appendLog("Начат перевод...");
     m_progressBar->setVisible(true);
     m_progressBar->setValue(10);
 
